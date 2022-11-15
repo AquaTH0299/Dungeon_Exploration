@@ -8,7 +8,7 @@ public static class helperUtilities
     {
         if(stringToCehck == "")
         {
-            Debug.Log($"{fileName} is empty and must contain a valu in object {thisObject.name.ToString()}");
+            Debug.Log($"{fileName} is empty and must contain a value in object {thisObject.name.ToString()}");
             return true;
         }
         return false;
