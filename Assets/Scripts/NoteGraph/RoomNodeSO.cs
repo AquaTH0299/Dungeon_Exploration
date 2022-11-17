@@ -6,8 +6,8 @@ using UnityEngine;
 public class RoomNodeSO : ScriptableObject
 {
     [HideInInspector] public string id;
-    [HideInInspector] public List<string> parentRoomIDList = new List<string>();
-    [HideInInspector] public List<string> chillRoomIDList = new List<string>();
+    [HideInInspector] public List<string> parentRoomNodeIDList = new List<string>();
+    [HideInInspector] public List<string> chillRoomNodeIDList = new List<string>();
     [HideInInspector] public RoomNodeGraphSO roomNodeGraph;
     public RoomNodeTypeSO roomNodeType;
     [HideInInspector] public RoomNodeTypeListSO roomNodeTypeList;
@@ -31,10 +31,18 @@ public class RoomNodeSO : ScriptableObject
         GUILayout.BeginArea(rect, nodeStyle);
         // Start Region to detect popup selection changes
         EditorGUI.BeginChangeCheck();
-        // display a popup using the roomnodetype name values that can be selected from< default to the currently set roomnodetype>
-        int selected = roomNodeTypeList.list.FindIndex(x => x == roomNodeType);
-        int selection = EditorGUILayout.Popup("",selected, GetRoomNodeTypeToDisplay());
-        roomNodeType = roomNodeTypeList.list[selection];
+        // display a popup using the room node type name values that can be selected from< default to the currently set room node type>
+        if(parentRoomNodeIDList.Count > 0 || roomNodeType.isEntrance)
+        {
+            //display the label that can't be changed
+            EditorGUILayout.LabelField(roomNodeType.roomNodeTypeName);
+        }
+        else
+        {
+            int selected = roomNodeTypeList.list.FindIndex(x => x == roomNodeType);
+            int selection = EditorGUILayout.Popup("",selected, GetRoomNodeTypeToDisplay());
+            roomNodeType = roomNodeTypeList.list[selection];
+        }
         if(EditorGUI.EndChangeCheck())
         {
             EditorUtility.SetDirty(this);
@@ -117,21 +125,39 @@ public class RoomNodeSO : ScriptableObject
         {
             ProcessLeftClickDownEvent();
         }
+        else if(currentEvents.button == 1)
+        {
+            ProcessRightClickDownEvent(currentEvents);
+        }
+    }
+
+    private void ProcessRightClickDownEvent(Event currentEvents)
+    {
+        roomNodeGraph.setNodeToDrawConnectionLineFrom(this, currentEvents.mousePosition);
     }
 
     private void ProcessLeftClickDownEvent()
     {
         Selection.activeObject = this;
         
-        if(isSelected == true)
-        {
-            isSelected = false;
-        }
-        else
-        {
-            isSelected = true;
-        }
+        // if(isSelected == true)
+        // {
+        //     isSelected = false;
+        // }
+        // else
+        // {
+        //     isSelected = true;
+        // }
     }
-
+    public bool AddChildRoomNodeIDToRoomNode(string childID)
+    {
+        chillRoomNodeIDList.Add(childID);
+        return true;
+    }
+    public bool AddParentRoomNodeIDToRoomNode(string parentID)
+    {
+        parentRoomNodeIDList.Add(parentID);
+        return true;
+    }
 #endif
 }
