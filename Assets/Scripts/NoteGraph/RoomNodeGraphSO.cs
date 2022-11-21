@@ -23,7 +23,26 @@ public class RoomNodeGraphSO : ScriptableObject
             roomNodeDictionary[node.id] = node;
         }
     }
+    public RoomNodeSO GetRoomNode(RoomNodeTypeSO roomNodeType)
+    {
+        foreach( RoomNodeSO node in roomNodeList)
+        {
+            if (node.roomNodeType == roomNodeType)
+            {
+                return node;
+            }
+        }
+        return null;
+    }
 
+    public RoomNodeSO GetRoomNode(string roomNodeID)
+    {
+        if(roomNodeDictionary.TryGetValue(roomNodeID, out RoomNodeSO roomNode))
+        {
+            return roomNode;
+        }
+        return null;
+    }
 #if UNITY_EDITOR
     [HideInInspector] public RoomNodeSO roomNodeToDrawLineFrom = null;
     [HideInInspector] public Vector2 linePosition;
